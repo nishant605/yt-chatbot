@@ -1,0 +1,69 @@
+# Environment variables
+.env
+
+# Python virtual environment
+venv/
+.venv/
+env
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Jupyter
+.ipynb_checkpoints/
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# SQLite
+*.db
+*.sqlite3
+
+# FAISS Vector Stores
+*.faiss
+*.pkl
+vectorstore/
+faiss_index/
+
+# LangChain cache
+.langchain/
+
+# Build folders
+build/
+dist/
+
+# Python packaging
+*.egg-info/
+.eggs/
+
+# Temporary files
+temp/
+tmp/
+
+# Coverage
+.coverage
+htmlcov/
+
+# pytest
+.pytest_cache/
+
+# mypy
+.mypy_cache/
+
+# Chrome Extension
+extension.zip
+
+# Node modules (if your extension uses npm)
+node_modules/

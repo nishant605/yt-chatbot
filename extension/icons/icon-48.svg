@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect x="3" y="3" width="42" height="42" rx="9" fill="url(#grad)" />
+  <!-- Head -->
+  <circle cx="24" cy="24" r="12" fill="white" />
+  <!-- Left Eye -->
+  <circle cx="18" cy="19" r="3" fill="#764ba2" />
+  <!-- Right Eye -->
+  <circle cx="30" cy="19" r="3" fill="#764ba2" />
+  <!-- Smile -->
+  <path d="M 18 25 Q 24 28 30 25" stroke="#764ba2" stroke-width="2" fill="none" stroke-linecap="round" />
+</svg>

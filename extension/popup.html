@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Kali YouTube AI Chat</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🤖</div>
+            <h1>Kali AI</h1>
+            <p class="subtitle">YouTube Assistant</p>
+        </div>
+
+        <div id="answer" class="response-box">
+            <div class="typing-indicator">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+
+        <div class="input-section">
+            <textarea
+                id="question"
+                class="question-input"
+                placeholder="Ask anything about this video..."
+            ></textarea>
+            
+            <button id="ask" class="ask-button">
+                <span class="button-text">Send</span>
+                <span class="button-icon">✨</span>
+            </button>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+
+</body>
+</html>
