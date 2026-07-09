@@ -1,5 +1,4 @@
-from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled
-from youtube_transcript_api.proxies import WebshareProxyConfig
+import requests
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_groq import ChatGroq
 from langchain_core.runnables import RunnableParallel, RunnablePassthrough, RunnableLambda
@@ -30,45 +29,64 @@ def extract_video_id(url: str) -> str | None:
     except Exception as e:
         print(f"Error extracting video ID: {e}")
         return None
-
-def get_transcript(video_id) -> str | None:
-    try:
-        ytt_api = YouTubeTranscriptApi(
-        proxy_config=WebshareProxyConfig(
-        proxy_username=os.environ["WEBSHARE_USERNAME"],
-        proxy_password=os.environ["WEBSHARE_PASSWORD"],
-    )
-        )
-        transcript_list = ytt_api.fetch(video_id, languages=['en', 'hi'])
-        transcript = " ".join([t.text for t in transcript_list])
-        return transcript
-    except TranscriptsDisabled:
-        print("Transcripts are disabled for this video.")
-        return None
-    except Exception as e:
-        print(f"Error fetching transcript: {e}")
-        return None
     
-def get_info(url) -> dict:
-
+ 
+def get_info(url: str) -> dict | None:
+    """
+    Fetches video metadata (title, description, channel, thumbnail, duration,
+    view count, upload date) using yt_dlp, without downloading the video.
+    """
     ydl_opts = {
-    "quiet": True, #yt-dlp will not print messages to the console
-    "skip_download": True, #don't download the video
-}
+        "quiet": True,
+        "skip_download": True,
+        "no_warnings": True,
+    }
+ 
     try:
-
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
-            return info
-        
     except Exception as e:
         print(f"Error fetching video info: {e}")
         return None
+ 
+    return {
+        "title": info.get("title"),
+        "description": info.get("description"),
+        "uploader": info.get("uploader"),
+        "thumbnail": info.get("thumbnail"),
+        "duration": info.get("duration"),
+        "view_count": info.get("view_count"),
+        "upload_date": info.get("upload_date"),
+    }
+
+def get_transcript(video_id) -> str | None:
+    api_key = os.getenv("SERPAPI_API_KEY")
+    if not api_key:
+        raise ValueError("SERPAPI_API_KEY is not set in the environment variables.")
+    params = {
+        "api_key": api_key,
+        "engine": "youtube_video_transcript",
+        "v": video_id,
+        "type" : "asr"
+    }
+    try:
+        response = requests.get("https://serpapi.com/search",params=params)
+        response.raise_for_status()
+        data = response.json()
+    except requests.exceptions.RequestException as e:
+        raise ValueError(f"Error fetching transcript: {e}")
+    
+    transcript = data.get("transcript")
+    if not transcript:
+        raise ValueError("Transcript not found in the response.")
+    
+    final_transcript = " ".join(entry.get("snippet", "") for entry in transcript)    
+    return final_transcript
 
 def get_metadata_doc(info):
 
     if info is None:
-        return ValueError("Video info is None. Cannot create metadata document.")
+        raise ValueError("Video info is None. Cannot create metadata document.")
     
     title = info["title"]
     description = info["description"]
@@ -93,7 +111,7 @@ def get_metadata_doc(info):
 def get_transcript_doc(transcript):
 
     if transcript is None:
-        return ValueError("Transcript is None. Cannot create transcript document.")
+        raise ValueError("Transcript is None. Cannot create transcript document.")
 
     transcript_doc = Document(
         page_content=transcript

@@ -27,7 +27,6 @@ pydantic
 
 streamlit  
 requests
-youtube-transcript-api
 yt-dlp
 
 fastapi
