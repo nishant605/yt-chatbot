@@ -5,16 +5,16 @@ from langchain_core.runnables import RunnableParallel, RunnablePassthrough, Runn
 from langchain_core.output_parsers import StrOutputParser
 from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import PromptTemplate
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_cohere import CohereEmbeddings
 from dotenv import load_dotenv
 import yt_dlp
 from langchain_core.documents import Document
 import re
-
+import os
 load_dotenv()
 
 llm = ChatGroq(model = "llama-3.3-70b-versatile")
-embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+embeddings = CohereEmbeddings(model="embed-english-v3.0", api_key=os.getenv("COHERE_API_KEY"))
 
 def extract_video_id(url: str) -> str | None:
     """

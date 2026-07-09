@@ -28,8 +28,6 @@ pydantic
 streamlit  
 requests
 youtube-transcript-api
-sentence-transformers
-langchain-huggingface
 yt-dlp
 
 fastapi
