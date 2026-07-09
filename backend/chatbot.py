@@ -7,6 +7,8 @@ from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import PromptTemplate
 from langchain_cohere import CohereEmbeddings
 from dotenv import load_dotenv
+from requests.help import info
+
 from langchain_core.documents import Document
 import re
 import os
@@ -28,13 +30,12 @@ def extract_video_id(url: str) -> str | None:
     except Exception as e:
         print(f"Error extracting video ID: {e}")
         return None
-
+    
+ 
 def get_info(url: str) -> dict | None:
     """
-    Fetches basic video metadata (title, channel, thumbnail) using YouTube's
-    public oEmbed endpoint. Unlike yt_dlp, this isn't subject to YouTube's
-    bot-check on cloud IPs, but it can't provide description, duration,
-    view count, or upload date.
+    Fetches video metadata (title, description, channel, thumbnail, duration,
+    view count, upload date) using yt_dlp, without downloading the video.
     """
     try:
         response = requests.get(
@@ -46,7 +47,7 @@ def get_info(url: str) -> dict | None:
     except requests.exceptions.RequestException as e:
         print(f"Error fetching video info: {e}")
         return None
-
+ 
     return {
         "title": data.get("title"),
         "description": None,
@@ -60,51 +61,35 @@ def get_info(url: str) -> dict | None:
 def get_transcript(video_id) -> str | None:
     api_key = os.getenv("SERPAPI_API_KEY")
     if not api_key:
-        print("SERPAPI_API_KEY is not set in the environment variables.")
-        return None
-
+        raise ValueError("SERPAPI_API_KEY is not set in the environment variables.")
     params = {
         "api_key": api_key,
         "engine": "youtube_video_transcript",
         "v": video_id,
-        "type": "asr"
+        "type" : "asr"
     }
-
     try:
-        response = requests.get("https://serpapi.com/search", params=params)
+        response = requests.get("https://serpapi.com/search",params=params)
         response.raise_for_status()
         data = response.json()
     except requests.exceptions.RequestException as e:
-        print(f"Error fetching transcript: {e}")
-        return None
-
+        raise ValueError(f"Error fetching transcript: {e}")
+    
     transcript = data.get("transcript")
     if not transcript:
-        print("Transcript not found in the response.")
-        return None
-
-    final_transcript = " ".join(entry.get("snippet", "") for entry in transcript)
-
-    print(f"[DEBUG] SerpAPI returned {len(transcript)} transcript entries, "
-          f"final_transcript length = {len(final_transcript)} chars")
-    if final_transcript:
-        print(f"[DEBUG] First 300 chars: {final_transcript[:300]!r}")
-
-    if not final_transcript.strip():
-        print("Transcript was fetched but appears to be empty.")
-        return None
-
+        raise ValueError("Transcript not found in the response.")
+    
+    final_transcript = " ".join(entry.get("snippet", "") for entry in transcript)    
     return final_transcript
 
 def get_metadata_doc(info):
 
     if info is None:
         raise ValueError("Video info is None. Cannot create metadata document.")
-
+    
     title = info.get("title") or "Unknown"
     channel = info.get("uploader") or "Unknown"
     description = info.get("description") or "Not available."
-
     metadata_doc = Document(
         page_content=f"""
     Title: {title}
@@ -139,10 +124,12 @@ def get_retriever(transcript_doc, metadata_doc):
     transcript_vs = FAISS.from_documents(chunks, embeddings)
 
     transcript_retriever = transcript_vs.as_retriever(
-    search_type="similarity",
+    search_type="mmr",
     search_kwargs={
-        "k": 8
-        })
+        "k": 5,
+        "fetch_k": 30,
+        "lambda_mult": 0.7
+    })
 
     return transcript_retriever, metadata_retriever
 
