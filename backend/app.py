@@ -63,10 +63,10 @@ def ask_question(request: ChatRequest):
     if current_video is None:
         return {"error": "No video loaded. Please load a video first."}
     
-    current_chain = video_chains[current_video]
+    current_chain = video_chains.get(current_video)
 
     if current_chain is None:
-        return {"error": "No video loaded. Please load a video first."}
+        return {"error": "Please load the video first or transcript is unavailable."}
 
     answer = current_chain.invoke(request.question)
 

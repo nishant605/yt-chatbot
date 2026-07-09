@@ -2,41 +2,28 @@
 <html>
 
 <head>
-    <title>Kali YouTube AI Chat</title>
-    <link rel="stylesheet" href="popup.css">
+  <meta charset="UTF-8">
+  <title>YouTube AI Chat</title>
+  <link rel="stylesheet" href="popup.css">
 </head>
 
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="logo">🤖</div>
-            <h1>Kali AI</h1>
-            <p class="subtitle">YouTube Assistant</p>
-        </div>
 
-        <div id="answer" class="response-box">
-            <div class="typing-indicator">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-
-        <div class="input-section">
-            <textarea
-                id="question"
-                class="question-input"
-                placeholder="Ask anything about this video..."
-            ></textarea>
-            
-            <button id="ask" class="ask-button">
-                <span class="button-text">Send</span>
-                <span class="button-icon">✨</span>
-            </button>
-        </div>
+  <div id="header">
+    <span id="logo">AI</span>
+    <div>
+      <div id="title">Video Chat</div>
+      <div id="status"><span class="dot" id="dot"></span><span id="status-text">Checking video...</span></div>
     </div>
+  </div>
 
-    <script src="popup.js"></script>
+  <div id="answer">Open a YouTube video to get started.</div>
+
+  <textarea id="question" placeholder="Ask anything about this video..."></textarea>
+
+  <button id="ask">Send</button>
+
+  <script src="popup.js"></script>
 
 </body>
 </html>

@@ -1,50 +1,41 @@
 {
-    "manifest_version": 3,
-    "name": "Kali YouTube Extension",
-    "version": "1.0",
+  "manifest_version": 3,
+  "name": "YouTube AI Chat",
+  "description": "Chat with any YouTube video",
+  "version": "1.0",
 
-    "permissions": [
-        "activeTab",
-        "tabs",
-        "storage"
-    ],
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "storage"
+  ],
 
-    "host_permissions": [
-        "https://www.youtube.com/*",
-        "https://yt-chatbot-aqx0.onrender.com/*"
-    ],
+  "host_permissions": [
+    "https://www.youtube.com/*",
+    "https://yt-chatbot-aqx0.onrender.com/*",
+    "http://127.0.0.1:8000/*"
+  ],
 
-    "background": {
-        "service_worker": "background.js"
-    },
+  "background": {
+    "service_worker": "background.js"
+  },
 
-    "action": {
-        "default_title": "Kali YouTube Extension",
-        "default_popup": "popup.html",
-        "default_icons": {
-            "16": "icons/icon-16.png",
-            "48": "icons/icon-48.png",
-            "128": "icons/icon-128.png"
-        }
-    },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "YouTube AI Chat"
+  },
 
-    "icons": {
-        "16": "icons/icon-16.png",
-        "48": "icons/icon-48.png",
-        "128": "icons/icon-128.png"
-    },
-
-    "content_scripts": [
-        {
-            "matches": ["https://www.youtube.com/*"],
-            "js": ["content.js"]
-        }
-    ],
-
-    "web_accessible_resources":[
-        {
-            "resources":["sidebar.html"],
-            "matches":["https://www.youtube.com/*"]
-        }
-        ]
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.youtube.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "sidebar.css"
+      ]
+    }
+  ]
 }
