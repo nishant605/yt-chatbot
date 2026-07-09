@@ -31,8 +31,13 @@ async function loadCurrentVideo() {
   const response = await sendMessageAsync({ type: "LOAD_VIDEO", url: currentUrl });
 
   if (response?.ok) {
-    setStatus("Ready", false);
-    answerDiv.innerText = response.data.message || "Video loaded.";
+    if (response.data.error) {
+      setStatus("Failed to load", false);
+      answerDiv.innerText = response.data.error;
+    } else {
+      setStatus("Ready", false);
+      answerDiv.innerText = response.data.message || "Video loaded.";
+    }
   } else {
     setStatus("Failed to load", false);
     answerDiv.innerText = response?.error || "Could not reach the server.";

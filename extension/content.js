@@ -95,7 +95,7 @@ async function maybeLoadVideo() {
   const response = await sendMessageAsync({ type: "LOAD_VIDEO", url });
 
   if (response?.ok) {
-    setStatus(response.data.message || "Ready", false);
+    setStatus(response.data.error || response.data.message || "Ready", false);
   } else {
     setStatus(response?.error || "Failed to load video", false);
   }
