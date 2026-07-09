@@ -53,7 +53,7 @@ def load_video(request: VideoRequest):
     metadata_doc = get_metadata_doc(info)
     transcript_doc = get_transcript_doc(transcript)
 
-    chain = get_chain(metadata_doc, transcript_doc)
+    chain = get_chain(transcript_doc, metadata_doc)
 
     video_chains[video_id] = chain
 
