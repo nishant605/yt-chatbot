@@ -8,7 +8,6 @@ from langchain_core.prompts import PromptTemplate
 from langchain_cohere import CohereEmbeddings
 from dotenv import load_dotenv
 from requests.help import info
-import yt_dlp
 from langchain_core.documents import Document
 import re
 import os
