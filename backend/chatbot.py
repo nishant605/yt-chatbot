@@ -14,7 +14,7 @@ import os
 load_dotenv()
 
 llm = ChatGroq(model = "llama-3.3-70b-versatile")
-embeddings = CohereEmbeddings(model="embed-english-v3.0", api_key=os.getenv("COHERE_API_KEY"))
+embeddings = CohereEmbeddings(model="embed-english-v3.0")
 
 def extract_video_id(url: str) -> str | None:
     """
