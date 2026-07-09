@@ -1,4 +1,5 @@
 from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled
+from youtube_transcript_api.proxies import WebshareProxyConfig
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_groq import ChatGroq
 from langchain_core.runnables import RunnableParallel, RunnablePassthrough, RunnableLambda
@@ -32,7 +33,12 @@ def extract_video_id(url: str) -> str | None:
 
 def get_transcript(video_id) -> str | None:
     try:
-        ytt_api = YouTubeTranscriptApi()
+        ytt_api = YouTubeTranscriptApi(
+        proxy_config=WebshareProxyConfig(
+        proxy_username=os.environ["WEBSHARE_USERNAME"],
+        proxy_password=os.environ["WEBSHARE_PASSWORD"],
+    )
+        )
         transcript_list = ytt_api.fetch(video_id, languages=['en', 'hi'])
         transcript = " ".join([t.text for t in transcript_list])
         return transcript
