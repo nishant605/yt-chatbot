@@ -124,12 +124,10 @@ def get_retriever(transcript_doc, metadata_doc):
     transcript_vs = FAISS.from_documents(chunks, embeddings)
 
     transcript_retriever = transcript_vs.as_retriever(
-    search_type="mmr",
+    search_type="similarity",
     search_kwargs={
-        "k": 5,
-        "fetch_k": 30,
-        "lambda_mult": 0.7
-    })
+        "k": 8
+        })
 
     return transcript_retriever, metadata_retriever
 
