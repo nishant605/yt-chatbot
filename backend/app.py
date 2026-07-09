@@ -46,7 +46,10 @@ def load_video(request: VideoRequest):
         return {"error": "Transcript not available for this video."}
     
     info = get_info(request.url)
-
+    
+    if  info is None:
+        return {"error": "Failed to fetch video info."}
+    
     metadata_doc = get_metadata_doc(info)
     transcript_doc = get_transcript_doc(transcript)
 

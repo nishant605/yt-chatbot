@@ -27,7 +27,6 @@ pydantic
 
 streamlit  
 requests
-yt-dlp
 
 fastapi
 uvicorn

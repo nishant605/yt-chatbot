@@ -7,6 +7,7 @@ from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import PromptTemplate
 from langchain_cohere import CohereEmbeddings
 from dotenv import load_dotenv
+from requests.help import info
 import yt_dlp
 from langchain_core.documents import Document
 import re
@@ -36,27 +37,25 @@ def get_info(url: str) -> dict | None:
     Fetches video metadata (title, description, channel, thumbnail, duration,
     view count, upload date) using yt_dlp, without downloading the video.
     """
-    ydl_opts = {
-        "quiet": True,
-        "skip_download": True,
-        "no_warnings": True,
-    }
- 
     try:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(url, download=False)
-    except Exception as e:
+        response = requests.get(
+            "https://www.youtube.com/oembed",
+            params={"url": url, "format": "json"},
+        )
+        response.raise_for_status()
+        data = response.json()
+    except requests.exceptions.RequestException as e:
         print(f"Error fetching video info: {e}")
         return None
  
     return {
-        "title": info.get("title"),
-        "description": info.get("description"),
-        "uploader": info.get("uploader"),
-        "thumbnail": info.get("thumbnail"),
-        "duration": info.get("duration"),
-        "view_count": info.get("view_count"),
-        "upload_date": info.get("upload_date"),
+        "title": data.get("title"),
+        "description": None,
+        "uploader": data.get("author_name"),
+        "thumbnail": data.get("thumbnail_url"),
+        "duration": None,
+        "view_count": None,
+        "upload_date": None,
     }
 
 def get_transcript(video_id) -> str | None:
@@ -88,14 +87,9 @@ def get_metadata_doc(info):
     if info is None:
         raise ValueError("Video info is None. Cannot create metadata document.")
     
-    title = info["title"]
-    description = info["description"]
-    channel = info["uploader"]
-    thumbnail = info["thumbnail"]
-    duration = info["duration"]
-    views = info["view_count"]
-    upload_date = info["upload_date"]
-
+    title = info.get("title") or "Unknown"
+    channel = info.get("uploader") or "Unknown"
+    description = info.get("description") or "Not available."
     metadata_doc = Document(
         page_content=f"""
     Title: {title}
