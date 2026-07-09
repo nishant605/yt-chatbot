@@ -11,7 +11,7 @@
 
     "host_permissions": [
         "https://www.youtube.com/*",
-        "http://127.0.0.1:8000/*"
+        "https://yt-chatbot-aqx0.onrender.com/*"
     ],
 
     "background": {

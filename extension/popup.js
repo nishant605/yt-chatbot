@@ -2,6 +2,8 @@ const askButton = document.getElementById("ask");
 const answerDiv = document.getElementById("answer");
 const questionInput = document.getElementById("question");
 
+const API_BASE_URL = "https://yt-chatbot-aqx0.onrender.com";
+
 let currentUrl = "";
 
 async function loadCurrentVideo() {
@@ -21,7 +23,7 @@ async function loadCurrentVideo() {
 
     try {
         const response = await fetch(
-            "http://127.0.0.1:8000/load_video",
+            `${API_BASE_URL}/load_video`,
             {
                 method: "POST",
                 headers: {
@@ -101,7 +103,7 @@ askButton.addEventListener("click", async () => {
 
     try {
         const response = await fetch(
-            "http://127.0.0.1:8000/ask",
+            `${API_BASE_URL}/ask`,
             {
                 method: "POST",
                 headers: {
@@ -124,7 +126,7 @@ askButton.addEventListener("click", async () => {
             showError("Something went wrong. Please try again.");
         }
     } catch (error) {
-        showError("Connection error. Make sure the backend is running on http://127.0.0.1:8000");
+        showError("Connection error. Make sure the backend is available at https://yt-chatbot-aqx0.onrender.com");
     } finally {
         askButton.disabled = false;
     }
